@@ -1,0 +1,31 @@
+# =========================
+# GLOBAL
+# =========================
+.env
+.env.*
+*.log
+.DS_Store
+Thumbs.db
+
+# =========================
+# BACKEND (Spring Boot)
+# =========================
+helpdesk-backend/target/
+helpdesk-backend/out/
+helpdesk-backend/.idea/
+helpdesk-backend/*.iml
+
+# =========================
+# FRONTEND (React / Vite)
+# =========================
+helpdesk-frontend/node_modules/
+helpdesk-frontend/dist/
+helpdesk-frontend/dist-ssr/
+helpdesk-frontend/.env
+helpdesk-frontend/.env.*
+
+# =========================
+# IDEs
+# =========================
+.vscode/
+.idea/

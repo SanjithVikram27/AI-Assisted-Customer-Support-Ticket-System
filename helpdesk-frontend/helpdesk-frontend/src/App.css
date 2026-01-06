@@ -1,0 +1,195 @@
+/* =========================
+   GLOBAL WRAPPER
+========================= */
+.app-wrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(180deg, #f6f7f9, #e9ecf1);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* =========================
+   CHAT CARD (MOBILE STYLE)
+========================= */
+.app-container {
+  width: 100%;
+  max-width: 420px;
+  height: 92vh;
+  background: #ffffff;
+  border-radius: 22px;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.18),
+    0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* =========================
+   HEADER
+========================= */
+.header {
+  background: linear-gradient(135deg, #ffeb00, #ffd600);
+  padding: 16px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 14px;
+  color: #000;
+  letter-spacing: 0.3px;
+}
+
+/* =========================
+   CHAT CONTAINER
+========================= */
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* REQUIRED FOR SCROLL */
+}
+
+/* =========================
+   CHAT BODY (SCROLL AREA)
+========================= */
+.chat-body {
+  flex: 1;
+  padding: 18px 16px;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+/* Hide ugly scrollbar (modern look) */
+.chat-body::-webkit-scrollbar {
+  width: 5px;
+}
+.chat-body::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+}
+
+/* =========================
+   MESSAGE BLOCK
+========================= */
+.message {
+  margin-bottom: 18px;
+  max-width: 82%;
+  display: flex;
+  flex-direction: column;
+  animation: fadeUp 0.25s ease;
+}
+
+/* Fade animation */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================
+   LABEL (YOU / AI HELP DESK)
+========================= */
+.label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #a0a0a0;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+/* =========================
+   USER MESSAGE
+========================= */
+.message.user {
+  align-self: flex-end;
+  text-align: right;
+}
+
+.message.user .bubble {
+  background: linear-gradient(135deg, #f1f1f1, #e6e6e6);
+  color: #111;
+  border-bottom-right-radius: 6px;
+}
+
+/* =========================
+   AI MESSAGE
+========================= */
+.message.ai {
+  align-self: flex-start;
+}
+
+.message.ai .bubble {
+  background: #f7f7f8;
+  color: #111;
+  border-bottom-left-radius: 6px;
+}
+
+/* =========================
+   MESSAGE BUBBLE
+========================= */
+.bubble {
+  padding: 14px 16px;
+  border-radius: 18px;
+  font-size: 14px;
+  line-height: 1.5;
+  word-wrap: break-word;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+/* =========================
+   INPUT BAR
+========================= */
+.chat-input {
+  display: flex;
+  align-items: center;
+  padding: 14px;
+  background: #fff;
+  border-top: 1px solid #eee;
+}
+
+/* Input */
+.chat-input input {
+  flex: 1;
+  padding: 14px 16px;
+  border-radius: 28px;
+  border: 1px solid #ddd;
+  outline: none;
+  font-size: 14px;
+  transition: border 0.2s ease;
+}
+
+.chat-input input:focus {
+  border-color: #1e90ff;
+}
+
+/* Send button */
+.chat-input button {
+  margin-left: 12px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1e90ff, #007aff);
+  color: white;
+  font-size: 18px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(30, 144, 255, 0.45);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.chat-input button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 22px rgba(30, 144, 255, 0.55);
+}
+
+.chat-input button:active {
+  transform: scale(0.95);
+}
