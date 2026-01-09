@@ -101,7 +101,7 @@ const PremiumChatLayout = () => {
       setIsTyping(false);
     }
   };
-
+  
   return (
     <div className="phone-frame">
       <div className="phone-body">

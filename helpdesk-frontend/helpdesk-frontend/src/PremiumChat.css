@@ -412,3 +412,24 @@ body {
   }
 }
 
+.menu-popup {
+  position: absolute;
+  bottom: 70px;
+  left: 20px;
+  background: linear-gradient(135deg, #2b2855, #3a356e);
+  border: 1px solid #d6c28f;
+  border-radius: 14px;
+  padding: 10px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+  z-index: 10;
+}
+
+.menu-popup button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+

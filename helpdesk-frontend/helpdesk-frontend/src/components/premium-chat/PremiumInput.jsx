@@ -2,6 +2,7 @@ import { useState } from "react";
 
 const PremiumInput = ({ onSend }) => {
   const [value, setValue] = useState("");
+  const [showMenu, setShowMenu] = useState(false);
 
   const send = () => {
     if (!value.trim()) return;
@@ -11,7 +12,24 @@ const PremiumInput = ({ onSend }) => {
 
   return (
     <div className="input-bar">
-      <button className="icon-btn">＋</button>
+      {/* PLUS BUTTON */}
+      <button
+        className="icon-btn"
+        onClick={() => setShowMenu(!showMenu)}
+      >
+        +
+      </button>
+
+      {/* MENU */}
+      {showMenu && (
+        <div className="menu-popup">
+          <button
+            onClick={() => window.open("/dashboard.html", "_self")}
+          >
+            📊 Ticket Dashboard
+          </button>
+        </div>
+      )}
 
       <input
         placeholder="Type a message..."

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Confirm Resolve</title>
+
+  <style>
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top, #3b2b8c, #0d0c1d);
+      color: white;
+      font-family: "Segoe UI", sans-serif;
+      text-align: center;
+      padding-top: 120px;
+    }
+
+    .confirm-box {
+      display: inline-block;
+      background: linear-gradient(135deg, #2b2855, #3a356e);
+      border: 1px solid #d6c28f;
+      border-radius: 22px;
+      padding: 36px 42px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+    }
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 16px;
+      letter-spacing: 1px;
+    }
+
+    p {
+      color: #e0e0e0;
+      margin-bottom: 28px;
+    }
+
+    /* 👑 GOLD BUTTON */
+    .gold-btn {
+      padding: 10px 22px;
+      border-radius: 22px;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      margin-right: 12px;
+
+      background: linear-gradient(
+        135deg,
+        #f7d774,
+        #d4af37,
+        #b8962e
+      );
+
+      color: #2b2100;
+      letter-spacing: 0.5px;
+
+      box-shadow:
+        0 4px 12px rgba(212, 175, 55, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+
+      transition: all 0.25s ease;
+    }
+
+    .gold-btn:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 6px 18px rgba(212, 175, 55, 0.65),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    }
+
+    /* 🥈 SILVER BUTTON */
+    .silver-btn {
+      padding: 10px 22px;
+      border-radius: 22px;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+
+      background: linear-gradient(
+        135deg,
+        #f1f1f1,
+        #cfcfcf,
+        #a9a9a9
+      );
+
+      color: #2b2b2b;
+      letter-spacing: 0.4px;
+
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.8),
+        0 2px 6px rgba(0, 0, 0, 0.25);
+
+      transition: all 0.25s ease;
+    }
+
+    .silver-btn:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.9),
+        0 4px 10px rgba(0, 0, 0, 0.35);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="confirm-box">
+    <h2>⚠️ Confirm Ticket Resolution</h2>
+    <p>Are you sure you want to resolve this ticket?</p>
+
+    <button class="gold-btn" onclick="resolve()">
+      ✅ Yes, Resolve
+    </button>
+
+    <button class="silver-btn" onclick="cancel()">
+      ❌ Cancel
+    </button>
+  </div>
+
+  <script>
+    async function resolve() {
+      const id = sessionStorage.getItem("resolveTicketId");
+
+      await fetch(`http://localhost:8081/api/v1/tickets/${id}/close`, {
+        method: "PUT",
+        headers: {
+          "X-ADMIN": "true"
+        }
+      });
+
+      sessionStorage.removeItem("resolveTicketId");
+      window.location.href = "dashboard.html";
+    }
+
+    function cancel() {
+      window.location.href = "dashboard.html";
+    }
+  </script>
+
+</body>
+</html>

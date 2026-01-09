@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ticket Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css" />
+</head>
+
+<body>
+
+  <!-- ================= HEADER ================= -->
+  <div class="dashboard-header">
+    <button class="back-btn" onclick="goBack()">← Back to Chat</button>
+
+    <h1 class="dashboard-title">
+      🎫 Ticket Dashboard
+    </h1>
+  </div>
+
+  <!-- ================= ANALYTICS BAR ================= -->
+  <section class="analytics-bar" id="analytics">
+    <div class="analytics-card gold">
+      <h4>Total Tickets</h4>
+      <span id="totalCount">0</span>
+    </div>
+
+    <div class="analytics-card silver">
+      <h4>Open</h4>
+      <span id="openCount">0</span>
+    </div>
+
+    <div class="analytics-card silver">
+      <h4>Closed</h4>
+      <span id="closedCount">0</span>
+    </div>
+
+    <div class="analytics-card gold">
+      <h4>High Priority</h4>
+      <span id="highCount">0</span>
+    </div>
+  </section>
+
+  <!-- ================= TICKETS ================= -->
+  <div id="tickets" class="ticket-grid"></div>
+
+  <!-- ================= SCRIPT ================= -->
+  <script src="dashboard-main.js"></script>
+
+  <!-- ================= TICKET SUMMARY MODAL ================= -->
+  <!-- ❌ DO NOT TOUCH BACKGROUND -->
+  <div id="ticketModal" style="
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.6);
+    backdrop-filter: blur(6px);
+    z-index:999;
+    align-items:center;
+    justify-content:center;
+  ">
+    <div style="
+      background:#2b2855;
+      border:1px solid #d6c28f;
+      border-radius:18px;
+      padding:24px;
+      width:420px;
+      color:white;
+    ">
+      <h3 style="margin-top:0;">📝 Ticket Summary</h3>
+
+      <p id="modalSummaryText"></p>
+
+      <button onclick="closeTicketModal()" style="
+        margin-top:18px;
+        padding:8px 14px;
+        border:none;
+        border-radius:14px;
+        background:#d6c28f;
+        font-weight:600;
+        cursor:pointer;
+      ">
+        Back
+      </button>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -80,4 +80,15 @@ public class TicketService {
                 .status(ticket.getStatus())
                 .build();
     }
+
+    public void closeTicket(Long id) {
+        Ticket ticket = ticketRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Ticket", "id", id)
+                );
+
+        ticket.setStatus(TicketStatus.CLOSED);
+        ticketRepository.save(ticket);
+    }
+
 }

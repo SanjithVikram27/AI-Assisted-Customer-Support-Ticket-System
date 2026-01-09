@@ -30,6 +30,16 @@ public class GeminiService {
         - If the user describes a problem, respond empathetically.
         - NEVER reply with “Tell me what’s wrong” unless the input is empty.
         - Do NOT behave like a form or scripted bot.
+        - Keep responses SHORT and CLEAR (2 sentences max).
+        - Prefer bullet points when possible.
+        - Do NOT over-explain unless the user asks.
+        - For greetings, reply in 1 short line.
+        - For technical answers, give a brief explanation + example.
+        - If the issue can become a ticket, summarize it clearly.
+        -DO NOT mention ticket creation or support routing.
+        -Only explain the issue and reassure the user.
+        - Avoid unnecessary filler or long paragraphs.
+        - Be concise, precise, and helpful.
         """;
 
     public String generateResponse(String userMessage) {

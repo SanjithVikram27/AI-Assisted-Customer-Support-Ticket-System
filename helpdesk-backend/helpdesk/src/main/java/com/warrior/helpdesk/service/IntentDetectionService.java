@@ -9,7 +9,7 @@ import java.util.List;
 public class IntentDetectionService {
 
     private static final List<String> GREETINGS = List.of(
-            "hi", "hello", "hey", "hai",
+            "hi", "hello", "hey", "hai", "What's up?",
             "good morning", "good afternoon", "good evening"
     );
 
