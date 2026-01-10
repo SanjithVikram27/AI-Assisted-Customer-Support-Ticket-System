@@ -2,20 +2,24 @@ FROM eclipse-temurin:17-jdk
 
 WORKDIR /app
 
-# Copy everything
-COPY . .
+# Copy Maven wrapper and config
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
 
-# Move into actual Spring Boot project folder
-WORKDIR /app/helpdesk
-
-# Give permission to mvnw
+# Give execute permission
 RUN chmod +x mvnw
 
-# Build the application
+# Download dependencies
+RUN ./mvnw dependency:go-offline
+
+# Copy source code
+COPY src src
+COPY helpdesk helpdesk
+
+# Build jar
 RUN ./mvnw clean package -DskipTests
 
-# Expose correct port
 EXPOSE 8081
 
-# Run the JAR
-CMD ["java", "-jar", "target/*.jar"]
+CMD ["java", "-jar", "helpdesk/target/*.jar"]
