@@ -2,10 +2,13 @@ FROM eclipse-temurin:17-jdk
 
 WORKDIR /app
 
-# Copy entire backend project
+# Copy everything
 COPY . .
 
-# Give permission to Maven wrapper
+# Move into actual Spring Boot project folder
+WORKDIR /app/helpdesk
+
+# Give permission to mvnw
 RUN chmod +x mvnw
 
 # Build the application
