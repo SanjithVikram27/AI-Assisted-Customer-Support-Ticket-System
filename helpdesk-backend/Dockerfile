@@ -2,10 +2,10 @@ FROM eclipse-temurin:17-jdk
 
 WORKDIR /app
 
-# Copy Maven wrapper and config
-COPY mvnw .
-COPY .mvn .mvn
-COPY pom.xml .
+# Copy Maven wrapper and pom from helpdesk folder
+COPY helpdesk/mvnw .
+COPY helpdesk/.mvn .mvn
+COPY helpdesk/pom.xml .
 
 # Give execute permission
 RUN chmod +x mvnw
@@ -14,12 +14,11 @@ RUN chmod +x mvnw
 RUN ./mvnw dependency:go-offline
 
 # Copy source code
-COPY src src
-COPY helpdesk helpdesk
+COPY helpdesk/src src
 
-# Build jar
+# Build the application
 RUN ./mvnw clean package -DskipTests
 
 EXPOSE 8081
 
-CMD ["java", "-jar", "helpdesk/target/*.jar"]
+CMD ["java", "-jar", "target/*.jar"]
