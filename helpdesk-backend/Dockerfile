@@ -2,17 +2,17 @@ FROM eclipse-temurin:17-jdk
 
 WORKDIR /app
 
-COPY mvnw .
-COPY .mvn .mvn
-COPY pom.xml .
+# Copy entire backend project
+COPY . .
 
+# Give permission to Maven wrapper
 RUN chmod +x mvnw
-RUN ./mvnw dependency:go-offline
 
-COPY src src
-
+# Build the application
 RUN ./mvnw clean package -DskipTests
 
+# Expose correct port
 EXPOSE 8081
 
+# Run the JAR
 CMD ["java", "-jar", "target/*.jar"]
