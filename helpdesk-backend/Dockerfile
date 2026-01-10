@@ -1,24 +1,25 @@
 FROM eclipse-temurin:17-jdk
 
+# Go inside backend module
 WORKDIR /app
 
-# Copy Maven wrapper and pom from helpdesk folder
-COPY helpdesk/mvnw .
-COPY helpdesk/.mvn .mvn
-COPY helpdesk/pom.xml .
+# Copy only backend folder
+COPY helpdesk ./helpdesk
 
-# Give execute permission
+# Move into the actual Spring Boot project
+WORKDIR /app/helpdesk
+
+# Give permission to Maven wrapper
 RUN chmod +x mvnw
 
 # Download dependencies
 RUN ./mvnw dependency:go-offline
 
-# Copy source code
-COPY helpdesk/src src
-
-# Build the application
+# Build the app
 RUN ./mvnw clean package -DskipTests
 
+# App runs on 8081
 EXPOSE 8081
 
-CMD ["java", "-jar", "target/*.jar"]
+# Run the jar
+CMD ["java", "-jar", "target/helpdesk-0.0.1-SNAPSHOT.jar"]
