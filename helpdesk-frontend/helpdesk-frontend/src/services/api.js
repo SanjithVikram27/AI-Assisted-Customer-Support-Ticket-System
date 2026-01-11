@@ -1,26 +1,40 @@
 import axios from "axios";
 
+/**
+ * Axios instance
+ * Base URL comes from environment variable
+ * Works for BOTH localhost and production
+ */
 const api = axios.create({
-  baseURL: "http://localhost:8081/api/v1",
+  baseURL: import.meta.env.VITE_API_BASE_URL,
 });
 
-/* ===========================
-   CHAT API (TEXT)
-=========================== */
-export const sendMessage = (message) =>
-  api.post("/chat", message, {
+/* ============================
+   CHAT API
+   POST /api/v1/chat
+============================ */
+export const sendMessage = (message) => {
+  return api.post("/chat", message, {
     headers: {
       "Content-Type": "text/plain",
     },
   });
+};
 
-/* ===========================
-   TICKETS API (JSON)
-=========================== */
-export const fetchAllTickets = () =>
-  api.get("/tickets");
+/* ============================
+   TICKETS API
+   GET /api/v1/tickets
+============================ */
+export const fetchAllTickets = () => {
+  return api.get("/tickets");
+};
 
-export const fetchTicketById = (id) =>
-  api.get(`/tickets/${id}`);
+/* ============================
+   GET TICKET BY ID
+   GET /api/v1/tickets/{id}
+============================ */
+export const fetchTicketById = (id) => {
+  return api.get(`/tickets/${id}`);
+};
 
 export default api;
