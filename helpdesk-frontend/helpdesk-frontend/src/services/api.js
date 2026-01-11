@@ -7,12 +7,13 @@ import axios from "axios";
  */
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
+  timeout: 60000, // 🔥 IMPORTANT for Render cold start
 });
 
-/* ============================
+/* ==============================
    CHAT API
    POST /api/v1/chat
-============================ */
+================================ */
 export const sendMessage = (message) => {
   return api.post("/chat", message, {
     headers: {
@@ -21,18 +22,18 @@ export const sendMessage = (message) => {
   });
 };
 
-/* ============================
+/* ==============================
    TICKETS API
    GET /api/v1/tickets
-============================ */
+================================ */
 export const fetchAllTickets = () => {
   return api.get("/tickets");
 };
 
-/* ============================
+/* ==============================
    GET TICKET BY ID
    GET /api/v1/tickets/{id}
-============================ */
+================================ */
 export const fetchTicketById = (id) => {
   return api.get(`/tickets/${id}`);
 };
