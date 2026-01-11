@@ -19,7 +19,8 @@ public class CorsConfig {
                                 "https://ai-assisted-customer-support-ticket.onrender.com"
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*");
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
             }
         };
     }
