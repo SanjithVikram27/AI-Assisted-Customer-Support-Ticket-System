@@ -1,13 +1,10 @@
 FROM eclipse-temurin:17-jdk
 
-# Go inside backend module
+# Set working directory
 WORKDIR /app
 
-# Copy only backend folder
-COPY helpdesk ./helpdesk
-
-# Move into the actual Spring Boot project
-WORKDIR /app/helpdesk
+# Copy everything from build context (already helpdesk/)
+COPY . .
 
 # Give permission to Maven wrapper
 RUN chmod +x mvnw
@@ -15,11 +12,11 @@ RUN chmod +x mvnw
 # Download dependencies
 RUN ./mvnw dependency:go-offline
 
-# Build the app
+# Build the application
 RUN ./mvnw clean package -DskipTests
 
-# App runs on 8081
-EXPOSE 8081
+# Expose Render port
+EXPOSE 10000
 
-# Run the jar
+# Run the app
 CMD ["java", "-jar", "target/helpdesk-0.0.1-SNAPSHOT.jar"]
