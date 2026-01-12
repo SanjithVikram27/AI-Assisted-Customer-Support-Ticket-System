@@ -29,6 +29,8 @@ public class GlobalExceptionHandler {
     // (Optional later) generic fallback
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex) {
+        ex.printStackTrace();
+
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Internal Server Error");
         response.put("status", 500);
