@@ -1,12 +1,16 @@
-/* ================= LOAD ALL TICKETS ================= */
+const API_BASE_URL =
+  window.location.hostname === "localhost"
+    ? "http://localhost:8081/api/v1"
+    : "https://ai-assisted-customer-support-ticket.onrender.com/api/v1";
 
 async function loadTickets() {
-  const res = await fetch("http://localhost:8081/api/v1/tickets");
+  const res = await fetch(`${API_BASE_URL}/tickets`);
   const tickets = await res.json();
 
   renderAnalytics(tickets);
   renderTickets(tickets);
 }
+
 
 /* ================= RENDER TICKETS ================= */
 
