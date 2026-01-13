@@ -117,24 +117,45 @@
   </div>
 
   <script>
-    async function resolve() {
-      const id = sessionStorage.getItem("resolveTicketId");
+  // ✅ ENV-AWARE BACKEND URL (MASTER FIX)
+  const API_BASE_URL =
+    window.location.hostname === "localhost"
+      ? "http://localhost:8081/api/v1"
+      : "https://ai-assisted-customer-support-ticket.onrender.com/api/v1";
 
-      await fetch(`http://localhost:8081/api/v1/tickets/${id}/close`, {
+  async function resolve() {
+    const id = sessionStorage.getItem("resolveTicketId");
+
+    if (!id) {
+      alert("No ticket selected");
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/tickets/${id}/close`, {
         method: "PUT",
         headers: {
           "X-ADMIN": "true"
         }
       });
 
+      if (!res.ok) {
+        throw new Error("Failed to resolve ticket");
+      }
+
       sessionStorage.removeItem("resolveTicketId");
       window.location.href = "dashboard.html";
+    } catch (err) {
+      alert("Backend not reachable. Please try again.");
+      console.error(err);
     }
+  }
 
-    function cancel() {
-      window.location.href = "dashboard.html";
-    }
-  </script>
+  function cancel() {
+    window.location.href = "dashboard.html";
+  }
+</script>
+
 
 </body>
 </html>
