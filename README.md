@@ -25,3 +25,33 @@ Admin dashboard with real-time ticket analytics
 Secure admin-only ticket resolution flow
 
 Fully deployed frontend & backend
+
+🛠️ Tech Stack
+Frontend
+
+React (Vite)
+
+HTML, CSS, JavaScript
+
+Axios / Fetch API
+
+Vercel (Deployment)
+
+Backend
+
+Java 17
+
+Spring Boot
+
+Spring Data JPA
+
+REST APIs
+
+MySQL
+
+Render (Deployment)
+
+🔹Author
+
+Sanjith Vikram
+Full-Stack Developer | AI Enthusiast
