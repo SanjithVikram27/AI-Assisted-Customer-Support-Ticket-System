@@ -3,7 +3,7 @@
 An end-to-end AI-powered helpdesk application that simulates a modern customer support workflow.
 Users can chat with an AI assistant, automatically generate support tickets, and manage them through an admin dashboard.
 
-Live Demo
+🔹Live Demo
 🌐 Frontend (Vercel): https://ai-assisted-customer-support-ticket.vercel.app
 
 🌐 Backend (Render): https://ai-assisted-customer-support-ticket.onrender.com
@@ -12,7 +12,7 @@ Live Demo
 
 This project demonstrates how AI + Full-Stack Engineering can be combined to automate customer support ticket creation and management.
 
-Key Highlights
+🔹KEY HIGHLIGHTS
 
 Conversational AI chat interface
 
@@ -26,7 +26,7 @@ Secure admin-only ticket resolution flow
 
 Fully deployed frontend & backend
 
-🛠️ Tech Stack
+🛠️ TECH STACK
 Frontend
 
 React (Vite)
