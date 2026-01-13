@@ -7,6 +7,8 @@ async function loadTickets() {
   const res = await fetch(`${API_BASE_URL}/tickets`);
   const tickets = await res.json();
 
+  tickets.sort((a, b) => a.id - b.id);
+
   renderAnalytics(tickets);
   renderTickets(tickets);
 }
