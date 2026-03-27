@@ -15,25 +15,23 @@ public class ChatService {
     public ChatService(
             GeminiService geminiService,
             ClassificationService classificationService,
-            TicketService ticketService
-    ) {
+            TicketService ticketService) {
         this.geminiService = geminiService;
         this.classificationService = classificationService;
         this.ticketService = ticketService;
     }
 
-    public String chat(String message) {
+    public String chat(String message, String createdBy) {
 
         if (message == null || message.isBlank()) {
             return geminiService.generateResponse(
-                    "User said nothing. Greet and ask how to help."
-            );
+                    "User said nothing. Greet and ask how to help.");
         }
 
-        // 🧠 1️⃣ AI ALWAYS RESPONDS FIRST
+        // 1. AI ALWAYS RESPONDS FIRST
         String aiReply = geminiService.generateResponse(message);
 
-        // 🧠 2️⃣ Decide silently if this is a support issue
+        // 2. Decide silently if this is a support issue
         TicketCategory category = classificationService.detectCategory(message);
 
         // GENERAL = not a support issue → pure AI
@@ -41,26 +39,26 @@ public class ChatService {
             return aiReply;
         }
 
-        // 🧠 3️⃣ Support issue → create ticket silently
+        // 3. Support issue → create ticket silently
         SupportTeam team = classificationService.assignTeam(category);
         TicketPriority priority = detectPriority(message, category);
 
         TicketRequest ticket = TicketRequest.builder()
-                .username("chat-user")
+                .username(createdBy != null && !createdBy.isBlank() ? createdBy : "chat-user")
                 .summary(message)
                 .category(category)
                 .priority(priority)
                 .assignedTeam(team)
+                .createdBy(createdBy) // ✅ ownership
                 .build();
 
-        TicketResponse savedTicket = ticketService.createTicket(ticket);
+        ticketService.createTicket(ticket);
 
-// 4️⃣ 🔥 BUILD FINAL RESPONSE WITH PARAGRAPH SEPARATION
-        String ticketMessage =
-                "✅🎫 I've created a 🔹" + category.name().toLowerCase() +
-                        "🔹 support ticket and routed it to our 🔸" +
-                        team.name().replace("_", " ").toLowerCase() +
-                        "🔸 team.";
+        // 4️. BUILD FINAL RESPONSE WITH PARAGRAPH SEPARATION
+        String ticketMessage = "✅🎫 I've created a 🔹" + category.name().toLowerCase() +
+                "🔹 support ticket and routed it to our 🔸" +
+                team.name().replace("_", " ").toLowerCase() +
+                "🔸 team.";
 
         return aiReply + "\n\n" + ticketMessage;
     }
@@ -71,95 +69,91 @@ public class ChatService {
 
         /* 🔴 HIGH PRIORITY — business blocking / security / money / access */
         if (
-            // Urgency & severity
-                text.contains("urgent") ||
-                        text.contains("asap") ||
-                        text.contains("immediately") ||
-                        text.contains("critical") ||
-                        text.contains("emergency") ||
+        // Urgency & severity
+        text.contains("urgent") ||
+                text.contains("asap") ||
+                text.contains("immediately") ||
+                text.contains("critical") ||
+                text.contains("emergency") ||
 
-                        // Access / blocked
-                        text.contains("blocked") ||
-                        text.contains("locked") ||
-                        text.contains("cannot login") ||
-                        text.contains("can't login") ||
-                        text.contains("login failed") ||
-                        text.contains("access denied") ||
+                // Access / blocked
+                text.contains("blocked") ||
+                text.contains("locked") ||
+                text.contains("cannot login") ||
+                text.contains("can't login") ||
+                text.contains("login failed") ||
+                text.contains("access denied") ||
 
-                        // Security & fraud
-                        text.contains("fraud") ||
-                        text.contains("hacked") ||
-                        text.contains("breach") ||
-                        text.contains("suspicious") ||
-                        text.contains("unauthorized") ||
-                        text.contains("security issue") ||
+                // Security & fraud
+                text.contains("fraud") ||
+                text.contains("hacked") ||
+                text.contains("breach") ||
+                text.contains("suspicious") ||
+                text.contains("unauthorized") ||
+                text.contains("security issue") ||
 
-                        // Payment / money loss
-                        text.contains("money deducted") ||
-                        text.contains("amount deducted") ||
-                        text.contains("charged twice") ||
-                        text.contains("double charged") ||
-                        text.contains("payment failed") ||
-                        text.contains("refund not received") ||
-                        text.contains("transaction failed") ||
-                        text.contains("balance missing") ||
+                // Payment / money loss
+                text.contains("money deducted") ||
+                text.contains("amount deducted") ||
+                text.contains("charged twice") ||
+                text.contains("double charged") ||
+                text.contains("payment failed") ||
+                text.contains("refund not received") ||
+                text.contains("transaction failed") ||
+                text.contains("balance missing") ||
 
-                        // App completely down
-                        text.contains("app not working") ||
-                        text.contains("system down") ||
-                        text.contains("service unavailable") ||
-                        text.contains("crash") ||
-                        text.contains("keeps crashing")
-        ) {
+                // App completely down
+                text.contains("app not working") ||
+                text.contains("system down") ||
+                text.contains("service unavailable") ||
+                text.contains("crash") ||
+                text.contains("keeps crashing")) {
             return TicketPriority.HIGH;
         }
 
         /* 🟡 MEDIUM PRIORITY — degraded experience / partial failure */
         if (
-            // Performance
-                text.contains("slow") ||
-                        text.contains("delay") ||
-                        text.contains("lag") ||
-                        text.contains("loading") ||
-                        text.contains("timeout") ||
-                        text.contains("takes too long") ||
+        // Performance
+        text.contains("slow") ||
+                text.contains("delay") ||
+                text.contains("lag") ||
+                text.contains("loading") ||
+                text.contains("timeout") ||
+                text.contains("takes too long") ||
 
-                        // Feature issues
-                        text.contains("not responding") ||
-                        text.contains("not opening") ||
-                        text.contains("sometimes works") ||
-                        text.contains("intermittent") ||
-                        text.contains("fails occasionally") ||
+                // Feature issues
+                text.contains("not responding") ||
+                text.contains("not opening") ||
+                text.contains("sometimes works") ||
+                text.contains("intermittent") ||
+                text.contains("fails occasionally") ||
 
-                        // Data / sync issues
-                        text.contains("not updating") ||
-                        text.contains("sync issue") ||
-                        text.contains("data mismatch") ||
-                        text.contains("incorrect data") ||
+                // Data / sync issues
+                text.contains("not updating") ||
+                text.contains("sync issue") ||
+                text.contains("data mismatch") ||
+                text.contains("incorrect data") ||
 
-                        // Non-blocking account issues
-                        text.contains("profile issue") ||
-                        text.contains("details not updating") ||
-                        text.contains("settings not saved")
-        ) {
+                // Non-blocking account issues
+                text.contains("profile issue") ||
+                text.contains("details not updating") ||
+                text.contains("settings not saved")) {
             return TicketPriority.MEDIUM;
         }
 
         /* 🟢 LOW PRIORITY — informational / cosmetic / general */
-        if (
-                text.contains("how to") ||
-                        text.contains("guide") ||
-                        text.contains("help me understand") ||
-                        text.contains("clarification") ||
-                        text.contains("question") ||
-                        text.contains("doubt") ||
-                        text.contains("information") ||
-                        text.contains("feature request") ||
-                        text.contains("suggestion") ||
-                        text.contains("enhancement") ||
-                        text.contains("ui issue") ||
-                        text.contains("cosmetic")
-        ) {
+        if (text.contains("how to") ||
+                text.contains("guide") ||
+                text.contains("help me understand") ||
+                text.contains("clarification") ||
+                text.contains("question") ||
+                text.contains("doubt") ||
+                text.contains("information") ||
+                text.contains("feature request") ||
+                text.contains("suggestion") ||
+                text.contains("enhancement") ||
+                text.contains("ui issue") ||
+                text.contains("cosmetic")) {
             return TicketPriority.LOW;
         }
 

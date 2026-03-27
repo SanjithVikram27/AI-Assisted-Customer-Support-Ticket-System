@@ -1,7 +1,6 @@
 package com.warrior.helpdesk.controller;
 
 import com.warrior.helpdesk.dto.TicketResponse;
-import com.warrior.helpdesk.entity.Ticket;
 import com.warrior.helpdesk.service.TicketService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/tickets")
-
 public class TicketController {
 
     private final TicketService ticketService;
@@ -20,9 +18,14 @@ public class TicketController {
         this.ticketService = ticketService;
     }
 
-    // DASHBOARD: GET ALL TICKETS
+    // ADMIN: GET ALL TICKETS
+    // USER: GET TICKETS BY createdBy (optional query param)
     @GetMapping
-    public List<TicketResponse> getAllTickets() {
+    public List<TicketResponse> getTickets(
+            @RequestParam(value = "createdBy", required = false) String createdBy) {
+        if (createdBy != null && !createdBy.isBlank()) {
+            return ticketService.getTicketsByUser(createdBy);
+        }
         return ticketService.getAllTickets();
     }
 
@@ -35,17 +38,13 @@ public class TicketController {
     @PutMapping("/{id}/close")
     public ResponseEntity<Void> closeTicket(
             @PathVariable Long id,
-            @RequestHeader("X-ADMIN") String admin
-    ) {
-        // simple admin check for now
+            @RequestHeader("X-ADMIN") String admin,
+            @RequestHeader(value = "X-Closed-By", defaultValue = "admin") String closedBy) {
         if (!"true".equals(admin)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-
-        ticketService.closeTicket(id);
+        ticketService.closeTicket(id, closedBy);
         return ResponseEntity.ok().build();
     }
 
-
 }
-

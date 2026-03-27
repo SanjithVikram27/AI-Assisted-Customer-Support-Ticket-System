@@ -25,6 +25,16 @@ const ChatContainer = () => {
         ...prev,
         { text: res.data, sender: "ai" },
       ]);
+
+      // 🔊 Speak AI reply aloud (cleaned)
+      const cleanForSpeech = (text) =>
+        text
+          .replace(/[\p{Emoji}\p{Extended_Pictographic}]/gu, "")
+          .replace(/[^\p{L}\p{N}\p{Z}\p{P}]/gu, "")
+          .replace(/\s+/g, " ")
+          .trim();
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(new SpeechSynthesisUtterance(cleanForSpeech(res.data)));
     } catch (error) {
       setMessages((prev) => [
         ...prev,

@@ -3,11 +3,9 @@ package com.warrior.helpdesk.service;
 import com.warrior.helpdesk.dto.TicketRequest;
 import com.warrior.helpdesk.dto.TicketResponse;
 import com.warrior.helpdesk.entity.Ticket;
-import com.warrior.helpdesk.enums.SupportTeam;
-import com.warrior.helpdesk.enums.TicketCategory;
 import com.warrior.helpdesk.enums.TicketStatus;
-import com.warrior.helpdesk.repository.TicketRepository;
 import com.warrior.helpdesk.exception.ResourceNotFoundException;
+import com.warrior.helpdesk.repository.TicketRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,39 +16,29 @@ import java.util.stream.Collectors;
 public class TicketService {
 
     private final TicketRepository ticketRepository;
-    private final ClassificationService classificationService;
 
-    public TicketService(TicketRepository ticketRepository,
-                         ClassificationService classificationService) {
+    public TicketService(TicketRepository ticketRepository) {
         this.ticketRepository = ticketRepository;
-        this.classificationService = classificationService;
     }
 
-    // CREATE
+    // ─── CREATE ───────────────────────────────────────────────────────────────
     public TicketResponse createTicket(TicketRequest request) {
-
-        TicketCategory category =
-                classificationService.detectCategory(request.getSummary());
-
-        SupportTeam team =
-                classificationService.assignTeam(category);
 
         Ticket ticket = Ticket.builder()
                 .username(request.getUsername())
                 .summary(request.getSummary())
                 .priority(request.getPriority())
-                .category(category)
-                .assignedTeam(team)
+                .category(request.getCategory())
+                .assignedTeam(request.getAssignedTeam())
                 .status(TicketStatus.OPEN)
                 .createdAt(LocalDateTime.now())
+                .createdBy(request.getCreatedBy())
                 .build();
 
-        Ticket savedTicket = ticketRepository.save(ticket);
-
-        return mapToResponse(savedTicket);
+        return mapToResponse(ticketRepository.save(ticket));
     }
 
-    // GET ALL
+    // ─── GET ALL ──────────────────────────────────────────────────────────────
     public List<TicketResponse> getAllTickets() {
         return ticketRepository.findAll()
                 .stream()
@@ -58,17 +46,33 @@ public class TicketService {
                 .collect(Collectors.toList());
     }
 
-    // GET BY ID
+    // ─── GET BY ID ────────────────────────────────────────────────────────────
     public TicketResponse getTicketById(Long id) {
         Ticket ticket = ticketRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Ticket", "id", id)
-                );
-
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket", "id", id));
         return mapToResponse(ticket);
     }
 
-    // MAPPER
+    // ─── GET BY USER ─────────────────────────────────────────────────────────
+    public List<TicketResponse> getTicketsByUser(String username) {
+        return ticketRepository.findByCreatedBy(username)
+                .stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    // ─── CLOSE
+    // ────────────────────────────────────────────────────────────────────────────
+    public void closeTicket(Long id, String closedBy) {
+        Ticket ticket = ticketRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket", "id", id));
+        ticket.setStatus(TicketStatus.CLOSED);
+        ticket.setClosedBy(closedBy != null && !closedBy.isBlank() ? closedBy : "admin");
+        ticket.setClosedAt(LocalDateTime.now());
+        ticketRepository.save(ticket);
+    }
+
+    // ─── MAPPER ───────────────────────────────────────────────────────────────
     private TicketResponse mapToResponse(Ticket ticket) {
         return TicketResponse.builder()
                 .id(ticket.getId())
@@ -78,17 +82,10 @@ public class TicketService {
                 .category(ticket.getCategory())
                 .assignedTeam(ticket.getAssignedTeam())
                 .status(ticket.getStatus())
+                .createdBy(ticket.getCreatedBy())
+                .createdAt(ticket.getCreatedAt())
+                .closedBy(ticket.getClosedBy())
+                .closedAt(ticket.getClosedAt())
                 .build();
     }
-
-    public void closeTicket(Long id) {
-        Ticket ticket = ticketRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Ticket", "id", id)
-                );
-
-        ticket.setStatus(TicketStatus.CLOSED);
-        ticketRepository.save(ticket);
-    }
-
 }

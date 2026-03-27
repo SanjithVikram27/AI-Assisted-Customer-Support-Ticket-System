@@ -1,88 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <title>Ticket Dashboard</title>
-  <link rel="stylesheet" href="dashboard.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard — AI Help Desk</title>
+    <link rel="stylesheet" href="dashboard.css" />
 </head>
 
 <body>
 
-  <!-- ================= HEADER ================= -->
-  <div class="dashboard-header">
-    <button class="back-btn" onclick="goBack()">← Back to Chat</button>
+    <!-- 🔒 Auth guard — only admins allowed -->
+    <script>
+        (function () {
+            if (!localStorage.getItem('adminLoggedIn')) {
+                window.location.replace('index.html');
+            }
+        })();
+    </script>
 
-    <h1 class="dashboard-title">
-      🎫 Ticket Dashboard
-    </h1>
-  </div>
+    <!-- ===== HEADER ===== -->
+    <header class="dashboard-header">
+        <button class="back-btn" onclick="adminLogout()">🚪 Logout</button>
 
-  <!-- ================= ANALYTICS BAR ================= -->
-  <section class="analytics-bar" id="analytics">
-    <div class="analytics-card gold">
-      <h4>Total Tickets</h4>
-      <span id="totalCount">0</span>
+        <div class="dashboard-title">💎 AI Help Desk — Admin</div>
+
+        <div class="view-toggle">
+            <span id="adminGreeting" style="font-size:0.85rem;color:#d4af37;font-weight:700;align-self:center;"></span>
+        </div>
+    </header>
+
+    <!-- ===== ANALYTICS ===== -->
+    <section style="display:flex;gap:16px;padding:20px;flex-wrap:wrap;">
+        <div class="analytics-card gold" style="flex:1;min-width:140px;text-align:center;">
+            <h3>🎫 Total</h3>
+            <p id="totalCount">—</p>
+        </div>
+        <div class="analytics-card" style="flex:1;min-width:140px;text-align:center;">
+            <h3>🔵 Open</h3>
+            <p id="openCount">—</p>
+        </div>
+        <div class="analytics-card silver" style="flex:1;min-width:140px;text-align:center;">
+            <h3>✅ Closed</h3>
+            <p id="closedCount">—</p>
+        </div>
+        <div class="analytics-card" style="flex:1;min-width:140px;text-align:center;">
+            <h3>🔴 High Priority</h3>
+            <p id="highCount">—</p>
+        </div>
+    </section>
+
+    <!-- ===== TICKET GRID ===== -->
+    <p
+        style="padding:0 20px 6px;font-size:0.75rem;font-weight:700;color:rgba(200,190,240,0.5);letter-spacing:1.5px;text-transform:uppercase;">
+        ALL SUPPORT TICKETS</p>
+    <div id="ticketGrid" class="ticket-grid">
+        <p style="padding:24px;color:rgba(200,190,240,0.5);">Loading tickets…</p>
     </div>
 
-    <div class="analytics-card silver">
-      <h4>Open</h4>
-      <span id="openCount">0</span>
+    <!-- ===== REGISTERED USERS ===== -->
+    <p
+        style="padding:0 20px 6px;font-size:0.75rem;font-weight:700;color:rgba(200,190,240,0.5);letter-spacing:1.5px;text-transform:uppercase;">
+        REGISTERED USERS</p>
+    <div class="users-table-wrapper">
+        <table class="users-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Role</th>
+                    <th>Registered</th>
+                </tr>
+            </thead>
+            <tbody id="usersTableBody">
+                <tr>
+                    <td colspan="5" style="padding:20px;color:rgba(200,190,240,0.5);text-align:center;">Loading users…
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
-    <div class="analytics-card silver">
-      <h4>Closed</h4>
-      <span id="closedCount">0</span>
+    <!-- ===== TICKET DETAIL MODAL ===== -->
+    <div id="ticketModal" class="modal-overlay" style="display:none;" onclick="closeTicketModal(event)">
+        <div class="modal-box" style="max-width:460px;text-align:left;">
+            <button onclick="closeModal()"
+                style="float:right;background:none;border:none;color:#d4af37;font-size:1.4rem;cursor:pointer;line-height:1;">✕</button>
+
+            <h3
+                style="margin:0 0 18px;font-size:1.1rem;background:linear-gradient(135deg,#f7d774,#d4af37);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+                🎫 Ticket Details
+            </h3>
+
+            <div id="modalContent" style="font-size:0.88rem;line-height:1.9;color:rgba(220,210,255,0.88);"></div>
+
+            <div style="margin-top:22px;display:flex;gap:12px;justify-content:flex-end;" id="modalActions"></div>
+        </div>
     </div>
 
-    <div class="analytics-card gold">
-      <h4>High Priority</h4>
-      <span id="highCount">0</span>
-    </div>
-  </section>
-
-  <!-- ================= TICKETS ================= -->
-  <div id="tickets" class="ticket-grid"></div>
-
-  <!-- ================= SCRIPT ================= -->
-  <script src="dashboard-main.js"></script>
-
-  <!-- ================= TICKET SUMMARY MODAL ================= -->
-  <!-- ❌ DO NOT TOUCH BACKGROUND -->
-  <div id="ticketModal" style="
-    display:none;
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.6);
-    backdrop-filter: blur(6px);
-    z-index:999;
-    align-items:center;
-    justify-content:center;
-  ">
-    <div style="
-      background:#2b2855;
-      border:1px solid #d6c28f;
-      border-radius:18px;
-      padding:24px;
-      width:420px;
-      color:white;
-    ">
-      <h3 style="margin-top:0;">📝 Ticket Summary</h3>
-
-      <p id="modalSummaryText"></p>
-
-      <button onclick="closeTicketModal()" style="
-        margin-top:18px;
-        padding:8px 14px;
-        border:none;
-        border-radius:14px;
-        background:#d6c28f;
-        font-weight:600;
-        cursor:pointer;
-      ">
-        Back
-      </button>
-    </div>
-  </div>
-
+    <script src="dashboard-main.js"></script>
 </body>
+
 </html>

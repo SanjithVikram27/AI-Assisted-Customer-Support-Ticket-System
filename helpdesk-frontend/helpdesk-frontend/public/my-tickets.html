@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Tickets — AI Support</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(ellipse at top left, #3b2b8c 0%, #1a1540 40%, #0d0c1d 100%);
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 25% 15%, rgba(255, 215, 120, 0.08), transparent 45%),
+                radial-gradient(circle at 75% 85%, rgba(180, 120, 255, 0.09), transparent 50%);
+            pointer-events: none;
+        }
+
+        /* ── HEADER ── */
+        .page-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 24px 32px;
+            border-bottom: 1px solid rgba(214, 194, 143, 0.15);
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            flex-wrap: wrap;
+        }
+
+        .back-btn {
+            padding: 9px 20px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.83rem;
+            background: linear-gradient(135deg, #d6c28f, #b89b5e);
+            color: #2b2100;
+            box-shadow: 0 4px 12px rgba(214, 194, 143, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            transition: all 0.22s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(214, 194, 143, 0.5);
+        }
+
+        .page-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f7d774, #d4af37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-badge {
+            margin-left: auto;
+            font-size: 0.8rem;
+            color: rgba(200, 190, 240, 0.7);
+            font-weight: 600;
+        }
+
+        /* ── ANALYTICS ── */
+        .analytics-bar {
+            display: flex;
+            gap: 16px;
+            padding: 20px 32px;
+            flex-wrap: wrap;
+        }
+
+        .analytics-card {
+            flex: 1;
+            min-width: 110px;
+            background: linear-gradient(135deg, rgba(43, 40, 85, 0.75), rgba(30, 28, 65, 0.8));
+            border: 1px solid rgba(214, 194, 143, 0.2);
+            border-radius: 16px;
+            padding: 16px 20px;
+            text-align: center;
+        }
+
+        .analytics-card h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f7d774, #d4af37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .analytics-card span {
+            font-size: 0.78rem;
+            color: rgba(200, 190, 240, 0.65);
+            font-weight: 600;
+        }
+
+        /* ── GRID ── */
+        .section-label {
+            padding: 0 32px 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: rgba(200, 190, 240, 0.5);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .ticket-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 8px 32px 48px;
+        }
+
+        /* ── TICKET CARD ── */
+        .ticket-card {
+            background: linear-gradient(145deg, rgba(43, 40, 85, 0.8), rgba(26, 21, 64, 0.85));
+            border: 1px solid rgba(214, 194, 143, 0.22);
+            border-radius: 20px;
+            padding: 22px 24px;
+            cursor: pointer;
+            animation: fadeCard 0.4s ease both;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .ticket-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
+            border-color: rgba(214, 194, 143, 0.5);
+        }
+
+        @keyframes fadeCard {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .ticket-card h3 {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #d4af37;
+            margin-bottom: 14px;
+        }
+
+        .ticket-card p {
+            font-size: 0.82rem;
+            color: rgba(210, 200, 240, 0.85);
+            margin-bottom: 8px;
+        }
+
+        .ticket-card p strong {
+            color: rgba(230, 220, 255, 0.95);
+        }
+
+        .click-hint {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 12px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            color: rgba(212, 175, 55, 0.75);
+            transition: all 0.2s;
+        }
+
+        .ticket-card:hover .click-hint {
+            background: rgba(212, 175, 55, 0.18);
+            color: #d4af37;
+        }
+
+        /* ── BADGES ── */
+        .badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .badge.high {
+            background: rgba(255, 80, 80, 0.2);
+            color: #ff8888;
+            border: 1px solid rgba(255, 80, 80, 0.35);
+        }
+
+        .badge.medium {
+            background: rgba(255, 180, 0, 0.18);
+            color: #ffd060;
+            border: 1px solid rgba(255, 180, 0, 0.35);
+        }
+
+        .badge.low {
+            background: rgba(60, 220, 100, 0.16);
+            color: #88ffaa;
+            border: 1px solid rgba(60, 220, 100, 0.3);
+        }
+
+        .status-open {
+            color: #88c0ff;
+            font-weight: 700;
+        }
+
+        .status-closed {
+            color: #88ffaa;
+            font-weight: 700;
+        }
+
+        /* ── EMPTY / LOADING ── */
+        .empty-state {
+            grid-column: 1/-1;
+            text-align: center;
+            padding: 64px 32px;
+            color: rgba(200, 190, 240, 0.45);
+        }
+
+        .empty-state .icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .empty-state p {
+            font-size: 0.9rem;
+        }
+
+        .loading {
+            grid-column: 1/-1;
+            text-align: center;
+            padding: 48px;
+            color: rgba(212, 175, 55, 0.6);
+            font-size: 0.9rem;
+        }
+
+        /* ════════════════════════════════════════
+           TICKET DETAIL MODAL
+        ════════════════════════════════════════ */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0, 0, 0, 0.72);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-box {
+            background: linear-gradient(145deg, #2b2855, #1a1540);
+            border: 1px solid rgba(214, 194, 143, 0.3);
+            border-radius: 26px;
+            padding: 36px 40px;
+            width: 100%;
+            max-width: 520px;
+            box-shadow: 0 32px 80px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            animation: slideUp 0.25s ease;
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 18px;
+            right: 22px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: rgba(200, 190, 240, 0.7);
+            font-size: 1.1rem;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 80, 80, 0.2);
+            color: #ff8888;
+            border-color: rgba(255, 80, 80, 0.3);
+        }
+
+        .modal-title {
+            font-size: 1rem;
+            font-weight: 800;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #f7d774, #d4af37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Issue block (highlighted) */
+        .issue-block {
+            background: rgba(212, 175, 55, 0.07);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-left: 3px solid #d4af37;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 20px;
+        }
+
+        .issue-block .issue-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: rgba(212, 175, 55, 0.65);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .issue-block .issue-text {
+            font-size: 1rem;
+            line-height: 1.65;
+            color: #f7d774;
+            font-style: italic;
+            font-weight: 600;
+        }
+
+        /* Info grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px 20px;
+            margin-bottom: 24px;
+        }
+
+        .info-item {}
+
+        .info-item .info-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: rgba(200, 190, 240, 0.45);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .info-item .info-value {
+            font-size: 0.85rem;
+            color: rgba(220, 210, 255, 0.9);
+            font-weight: 600;
+        }
+
+        .modal-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .close-btn {
+            padding: 10px 24px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.85rem;
+            background: linear-gradient(135deg, #d6c28f, #b89b5e);
+            color: #2b2100;
+            box-shadow: 0 4px 12px rgba(214, 194, 143, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            transition: all 0.22s ease;
+        }
+
+        .close-btn:hover {
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 🔒 Auth Guard -->
+    <script>
+        (function () {
+            const admin = localStorage.getItem('adminLoggedIn');
+            if (admin) { window.location.replace('dashboard.html'); return; }
+            const user = localStorage.getItem('loggedInUser');
+            if (!user) { window.location.replace('index.html'); }
+        })();
+    </script>
+
+    <!-- HEADER -->
+    <header class="page-header">
+        <button class="back-btn" onclick="goToChat()">← Back to Chat</button>
+        <span class="page-title">🎫 My Tickets</span>
+        <span class="user-badge" id="userBadge"></span>
+    </header>
+
+    <!-- ANALYTICS -->
+    <section class="analytics-bar">
+        <div class="analytics-card">
+            <h2 id="totalCount">—</h2><span>My Tickets</span>
+        </div>
+        <div class="analytics-card">
+            <h2 id="openCount">—</h2><span>Open</span>
+        </div>
+        <div class="analytics-card">
+            <h2 id="closedCount">—</h2><span>Closed</span>
+        </div>
+        <div class="analytics-card">
+            <h2 id="highCount">—</h2><span>High Priority</span>
+        </div>
+    </section>
+
+    <!-- TICKET GRID -->
+    <p class="section-label">YOUR SUBMITTED TICKETS</p>
+    <div class="ticket-grid" id="tickets">
+        <div class="loading">Loading your tickets…</div>
+    </div>
+
+    <!-- ═══════ TICKET DETAIL MODAL ═══════ -->
+    <div id="detailModal" class="modal-overlay" style="display:none;" onclick="onOverlayClick(event)">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal()" title="Close">✕</button>
+
+            <div class="modal-title" id="modalTitle">🎫 Ticket Details</div>
+
+            <!-- Issue (highlighted) -->
+            <div class="issue-block">
+                <div class="issue-label">📝 Your Issue</div>
+                <div class="issue-text" id="modalIssue">—</div>
+            </div>
+
+            <!-- Info grid -->
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Ticket ID</div>
+                    <div class="info-value" id="modalId">—</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Category</div>
+                    <div class="info-value" id="modalCategory">—</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Priority</div>
+                    <div class="info-value" id="modalPriority">—</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Status</div>
+                    <div class="info-value" id="modalStatus">—</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Assigned Team</div>
+                    <div class="info-value" id="modalTeam">—</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Date & Time</div>
+                    <div class="info-value" id="modalDate">—</div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="close-btn" onclick="closeModal()">← Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL =
+            window.location.hostname === 'localhost'
+                ? 'http://localhost:8081/api/v1'
+                : 'https://ai-assisted-customer-support-ticket.onrender.com/api/v1';
+
+        const userRaw = localStorage.getItem('loggedInUser');
+        const loggedInUser = userRaw ? JSON.parse(userRaw) : null;
+
+        if (loggedInUser) {
+            document.getElementById('userBadge').textContent = '👤 ' + loggedInUser.name;
+        }
+
+        function goToChat() {
+            const chatUrl = window.location.hostname === 'localhost'
+                ? 'http://localhost:5173'
+                : window.location.origin;
+            window.location.href = chatUrl;
+        }
+
+        // ── Load ────────────────────────────────────────────────────────────────
+        async function loadMyTickets() {
+            const container = document.getElementById('tickets');
+            if (!loggedInUser) { window.location.replace('index.html'); return; }
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/tickets?createdBy=${encodeURIComponent(loggedInUser.username)}`);
+                if (!res.ok) throw new Error('Server error ' + res.status);
+                const tickets = await res.json();
+                tickets.sort((a, b) => b.id - a.id);
+                renderAnalytics(tickets);
+                renderTickets(tickets);
+            } catch (err) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                      <div class="icon">⚠️</div>
+                      <p>Could not load tickets. Make sure the backend is running.</p>
+                    </div>`;
+            }
+        }
+
+        function renderAnalytics(tickets) {
+            document.getElementById('totalCount').textContent = tickets.length;
+            document.getElementById('openCount').textContent = tickets.filter(t => t.status === 'OPEN').length;
+            document.getElementById('closedCount').textContent = tickets.filter(t => t.status === 'CLOSED').length;
+            document.getElementById('highCount').textContent = tickets.filter(t => t.priority === 'HIGH').length;
+        }
+
+        function renderTickets(tickets) {
+            const container = document.getElementById('tickets');
+            container.innerHTML = '';
+
+            if (tickets.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                      <div class="icon">🎫</div>
+                      <p>You haven't submitted any support tickets yet.<br>Start a chat to get help!</p>
+                    </div>`;
+                return;
+            }
+
+            tickets.forEach(t => {
+                const card = document.createElement('div');
+                card.className = 'ticket-card';
+
+                const priorityClass = t.priority ? t.priority.toLowerCase() : 'medium';
+                const statusClass = t.status === 'OPEN' ? 'status-open' : 'status-closed';
+                const statusIcon = t.status === 'OPEN' ? '🔵' : '✅';
+                const createdDate = t.createdAt
+                    ? new Date(t.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+                    : '—';
+
+                card.innerHTML = `
+                    <h3>#${t.id} — ${t.category || '—'}</h3>
+                    <p><strong>Priority:</strong> <span class="badge ${priorityClass}">${t.priority || '—'}</span></p>
+                    <p><strong>Status:</strong> <span class="${statusClass}">${statusIcon} ${t.status}</span></p>
+                    <p><strong>Team:</strong> ${t.assignedTeam || '—'}</p>
+                    ${createdDate !== '—' ? `<p><strong>Submitted:</strong> ${createdDate}</p>` : ''}
+                    <div class="click-hint">🔍 Click to view issue details</div>
+                `;
+
+                card.addEventListener('click', () => openModal(t));
+                container.appendChild(card);
+            });
+        }
+
+        // ── Modal ────────────────────────────────────────────────────────────────
+        function openModal(t) {
+            const isClosed = t.status === 'CLOSED';
+            const dateTime = t.createdAt
+                ? new Date(t.createdAt).toLocaleString('en-IN', {
+                    day: '2-digit', month: 'short', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
+                })
+                : '—';
+            const priorityClass = t.priority ? t.priority.toLowerCase() : 'medium';
+
+            document.getElementById('modalTitle').textContent = `🎫 Ticket #${t.id} — ${t.category || ''}`;
+            document.getElementById('modalIssue').textContent = t.summary || '(No issue text recorded)';
+            document.getElementById('modalId').textContent = '#' + t.id;
+            document.getElementById('modalCategory').textContent = t.category || '—';
+            document.getElementById('modalPriority').innerHTML = `<span class="badge ${priorityClass}">${t.priority || '—'}</span>`;
+            document.getElementById('modalStatus').innerHTML = isClosed
+                ? '<span class="status-closed">✅ Closed</span>'
+                : '<span class="status-open">🔵 Open</span>';
+            document.getElementById('modalTeam').textContent = t.assignedTeam || '—';
+            document.getElementById('modalDate').textContent = dateTime;
+
+            // ── Resolved-by section ──────────────────────────────────────────
+            let resolvedEl = document.getElementById('resolvedSection');
+            if (!resolvedEl) {
+                resolvedEl = document.createElement('div');
+                resolvedEl.id = 'resolvedSection';
+                document.querySelector('.modal-footer').insertAdjacentElement('beforebegin', resolvedEl);
+            }
+
+            if (isClosed) {
+                const closedTime = t.closedAt
+                    ? new Date(t.closedAt).toLocaleString('en-IN', {
+                        day: '2-digit', month: 'short', year: 'numeric',
+                        hour: '2-digit', minute: '2-digit'
+                    })
+                    : null;
+                resolvedEl.style.cssText = `
+                    margin: 16px 0 0;
+                    padding: 14px 16px;
+                    background: rgba(212,175,55,0.08);
+                    border: 1px solid rgba(212,175,55,0.25);
+                    border-left: 3px solid #d4af37;
+                    border-radius: 12px;
+                `;
+                resolvedEl.innerHTML = `
+                    <div style="font-size:0.7rem;font-weight:700;color:rgba(212,175,55,0.55);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">✅ Resolution Info</div>
+                    <div style="font-size:0.85rem;color:rgba(255,240,190,0.85);">
+                        Resolved by <strong style="color:#f7d774;">Admin ${t.closedBy || 'admin'}</strong>
+                        ${closedTime ? `<br><span style="font-size:0.78rem;color:rgba(212,175,55,0.6);">on ${closedTime}</span>` : ''}
+                    </div>
+                `;
+            } else {
+                resolvedEl.style.cssText = '';
+                resolvedEl.innerHTML = '';
+            }
+
+            document.getElementById('detailModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').style.display = 'none';
+        }
+
+        // Close when clicking the dark backdrop (not the modal box)
+        function onOverlayClick(e) {
+            if (e.target === document.getElementById('detailModal')) closeModal();
+        }
+
+        // Boot
+        loadMyTickets();
+    </script>
+
+</body>
+
+</html>

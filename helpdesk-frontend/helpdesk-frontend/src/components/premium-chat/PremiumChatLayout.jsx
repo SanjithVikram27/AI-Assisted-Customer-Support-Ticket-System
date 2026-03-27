@@ -15,7 +15,27 @@ const PremiumChatLayout = () => {
 
   const [isTyping, setIsTyping] = useState(false);
   const [time, setTime] = useState("");
+
+  // ─── Auth guard — runs synchronously before first render ─────────────────
+  const [loggedInUser] = useState(() => {
+    const adminSession = localStorage.getItem("adminLoggedIn");
+    if (adminSession) {
+      window.location.replace("/dashboard.html");
+      return null;
+    }
+    const raw = localStorage.getItem("loggedInUser");
+    if (!raw) {
+      window.location.replace("/index.html");
+      return null;
+    }
+    try { return JSON.parse(raw); }
+    catch { window.location.replace("/index.html"); return null; }
+  });
+
   const bottomRef = useRef(null);
+
+  // Guard — don’t render anything if redirecting
+  if (!loggedInUser) return null;
 
   /* 🔥 Live time like phone */
   useEffect(() => {
@@ -41,7 +61,7 @@ const PremiumChatLayout = () => {
     // User message
     setMessages((prev) => [
       ...prev,
-      { side: "right", name: "You", text },
+      { side: "right", name: loggedInUser?.name || "You", text },
     ]);
 
     setIsTyping(true);
@@ -59,6 +79,16 @@ const PremiumChatLayout = () => {
           text: replyText,
         },
       ]);
+
+      // 🔊 Speak AI reply aloud (cleaned)
+      const cleanForSpeech = (text) =>
+        text
+          .replace(/[\p{Emoji}\p{Extended_Pictographic}]/gu, "")
+          .replace(/[^\p{L}\p{N}\p{Z}\p{P}]/gu, "")
+          .replace(/\s+/g, " ")
+          .trim();
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(new SpeechSynthesisUtterance(cleanForSpeech(replyText)));
 
       // 2️⃣ FRONTEND-ONLY TICKET DETECTION (NO JSON)
       const lower = replyText.toLowerCase();
@@ -101,7 +131,7 @@ const PremiumChatLayout = () => {
       setIsTyping(false);
     }
   };
-  
+
   return (
     <div className="phone-frame">
       <div className="phone-body">
@@ -126,8 +156,39 @@ const PremiumChatLayout = () => {
 
         {/* CHAT SCREEN */}
         <div className="chat-screen">
-          <div className="chat-header">
-            💎 AI-Assisted Customer Support System
+          <div className="chat-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div>
+              💎 AI-Assisted Customer Support System
+              {loggedInUser && (
+                <span style={{ fontSize: '0.7rem', display: 'block', opacity: 0.65, marginTop: '2px', fontWeight: 500 }}>
+                  Hi, {loggedInUser.name} 👋
+                </span>
+              )}
+            </div>
+
+            {/* Logout / Back to Home */}
+            <button
+              title="Logout"
+              onClick={() => {
+                localStorage.removeItem('loggedInUser');
+                window.location.replace('/index.html');
+              }}
+              style={{
+                background: 'linear-gradient(135deg,#d6c28f,#b89b5e)',
+                border: 'none',
+                borderRadius: '14px',
+                padding: '5px 12px',
+                fontSize: '0.72rem',
+                fontWeight: 700,
+                color: '#2b2100',
+                cursor: 'pointer',
+                boxShadow: '0 3px 8px rgba(214,194,143,0.4)',
+                whiteSpace: 'nowrap',
+                flexShrink: 0,
+              }}
+            >
+              🚪 Logout
+            </button>
           </div>
 
           <div className="messages">

@@ -16,12 +16,10 @@ public class ChatController {
         this.chatService = chatService;
     }
 
-    @PostMapping(
-            value = "/chat",
-            consumes = MediaType.TEXT_PLAIN_VALUE,
-            produces = MediaType.TEXT_PLAIN_VALUE
-    )
-    public ResponseEntity<String> chat(@RequestBody String message) {
-        return ResponseEntity.ok(chatService.chat(message));
+    @PostMapping(value = "/chat", consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> chat(
+            @RequestBody String message,
+            @RequestHeader(value = "X-Username", defaultValue = "guest") String username) {
+        return ResponseEntity.ok(chatService.chat(message, username));
     }
 }

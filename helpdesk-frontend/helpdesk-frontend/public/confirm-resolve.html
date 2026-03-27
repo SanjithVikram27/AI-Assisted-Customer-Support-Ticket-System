@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>Confirm Resolve</title>
@@ -43,12 +44,10 @@
       font-weight: 700;
       margin-right: 12px;
 
-      background: linear-gradient(
-        135deg,
-        #f7d774,
-        #d4af37,
-        #b8962e
-      );
+      background: linear-gradient(135deg,
+          #f7d774,
+          #d4af37,
+          #b8962e);
 
       color: #2b2100;
       letter-spacing: 0.5px;
@@ -75,12 +74,10 @@
       cursor: pointer;
       font-weight: 700;
 
-      background: linear-gradient(
-        135deg,
-        #f1f1f1,
-        #cfcfcf,
-        #a9a9a9
-      );
+      background: linear-gradient(135deg,
+          #f1f1f1,
+          #cfcfcf,
+          #a9a9a9);
 
       color: #2b2b2b;
       letter-spacing: 0.4px;
@@ -117,45 +114,50 @@
   </div>
 
   <script>
-  // ✅ ENV-AWARE BACKEND URL (MASTER FIX)
-  const API_BASE_URL =
-    window.location.hostname === "localhost"
-      ? "http://localhost:8081/api/v1"
-      : "https://ai-assisted-customer-support-ticket.onrender.com/api/v1";
+    // ✅ ENV-AWARE BACKEND URL (MASTER FIX)
+    const API_BASE_URL =
+      window.location.hostname === "localhost"
+        ? "http://localhost:8081/api/v1"
+        : "https://ai-assisted-customer-support-ticket.onrender.com/api/v1";
 
-  async function resolve() {
-    const id = sessionStorage.getItem("resolveTicketId");
+    async function resolve() {
+      const id = sessionStorage.getItem("resolveTicketId");
 
-    if (!id) {
-      alert("No ticket selected");
-      return;
-    }
-
-    try {
-      const res = await fetch(`${API_BASE_URL}/tickets/${id}/close`, {
-        method: "PUT",
-        headers: {
-          "X-ADMIN": "true"
-        }
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to resolve ticket");
+      if (!id) {
+        alert("No ticket selected");
+        return;
       }
 
-      sessionStorage.removeItem("resolveTicketId");
-      window.location.href = "dashboard.html";
-    } catch (err) {
-      alert("Backend not reachable. Please try again.");
-      console.error(err);
-    }
-  }
+      // Read admin name from localStorage
+      const adminName = localStorage.getItem("adminLoggedIn") || "admin";
 
-  function cancel() {
-    window.location.href = "dashboard.html";
-  }
-</script>
+      try {
+        const res = await fetch(`${API_BASE_URL}/tickets/${id}/close`, {
+          method: "PUT",
+          headers: {
+            "X-ADMIN": "true",
+            "X-Closed-By": adminName
+          }
+        });
+
+        if (!res.ok) {
+          throw new Error("Failed to resolve ticket");
+        }
+
+        sessionStorage.removeItem("resolveTicketId");
+        window.location.href = "dashboard.html";
+      } catch (err) {
+        alert("Backend not reachable. Please try again.");
+        console.error(err);
+      }
+    }
+
+    function cancel() {
+      window.location.href = "dashboard.html";
+    }
+  </script>
 
 
 </body>
+
 </html>

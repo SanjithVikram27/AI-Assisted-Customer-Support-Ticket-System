@@ -15,9 +15,14 @@ const api = axios.create({
    POST /api/v1/chat
 ================================ */
 export const sendMessage = (message) => {
+  // Attach logged-in username so backend can tag tickets
+  const userRaw = localStorage.getItem("loggedInUser");
+  const username = userRaw ? JSON.parse(userRaw).username : "guest";
+
   return api.post("/chat", message, {
     headers: {
       "Content-Type": "text/plain",
+      "X-Username": username,
     },
   });
 };

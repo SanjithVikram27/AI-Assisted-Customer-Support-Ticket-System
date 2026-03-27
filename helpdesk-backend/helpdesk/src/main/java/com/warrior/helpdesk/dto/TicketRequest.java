@@ -12,4 +12,5 @@ public class TicketRequest {
     private TicketPriority priority;
     private TicketCategory category;
     private SupportTeam assignedTeam;
+    private String createdBy;  // logged-in user's username
 }

@@ -6,7 +6,6 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-
 @Entity
 @Table(name = "tickets")
 @Getter
@@ -36,4 +35,7 @@ public class Ticket {
     private TicketStatus status;
 
     private LocalDateTime createdAt;
+    private String createdBy; // username of the submitting user
+    private String closedBy; // admin who resolved the ticket
+    private LocalDateTime closedAt; // when it was resolved
 }

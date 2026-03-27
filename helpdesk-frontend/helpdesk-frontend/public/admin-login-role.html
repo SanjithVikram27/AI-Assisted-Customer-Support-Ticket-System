@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login — AI Support</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(ellipse at top left, #3b2b8c 0%, #1a1540 40%, #0d0c1d 100%);
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 30% 20%, rgba(255, 215, 120, 0.10), transparent 45%),
+                radial-gradient(circle at 70% 80%, rgba(255, 215, 120, 0.07), transparent 45%);
+            pointer-events: none;
+        }
+
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.16;
+            animation: drift 12s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+
+        .orb-1 {
+            width: 380px;
+            height: 380px;
+            background: #7c3aed;
+            top: -90px;
+            left: -90px;
+        }
+
+        .orb-2 {
+            width: 280px;
+            height: 280px;
+            background: #d4af37;
+            bottom: -60px;
+            right: -60px;
+            animation-delay: -5s;
+        }
+
+        @keyframes drift {
+            from {
+                transform: translate(0, 0) scale(1);
+            }
+
+            to {
+                transform: translate(25px, 18px) scale(1.07);
+            }
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            padding: 10px 20px;
+            border-radius: 22px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            background: linear-gradient(135deg, #d6c28f, #b89b5e);
+            color: #2b2100;
+            box-shadow: 0 6px 16px rgba(214, 194, 143, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.65);
+            transition: all 0.25s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 24px rgba(214, 194, 143, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        .card {
+            position: relative;
+            background: linear-gradient(145deg, rgba(43, 40, 85, 0.88), rgba(20, 18, 55, 0.92));
+            border: 1px solid rgba(214, 194, 143, 0.38);
+            border-radius: 28px;
+            padding: 48px 44px;
+            width: 400px;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 28px 70px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            animation: fadeIn 0.6s cubic-bezier(0.34, 1.45, 0.64, 1) both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 55%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #d4af37, transparent);
+            border-radius: 2px;
+        }
+
+        /* 🎮 Squid Game shapes */
+        .squid-shapes {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            animation: shapeGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes shapeGlow {
+
+            0%,
+            100% {
+                filter: drop-shadow(0 0 6px rgba(255, 50, 120, 0.5));
+            }
+
+            50% {
+                filter: drop-shadow(0 0 16px rgba(255, 50, 120, 0.9));
+            }
+        }
+
+        .sq-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 3px solid #ff3278;
+            background: transparent;
+        }
+
+        .sq-triangle {
+            width: 0;
+            height: 0;
+            border-left: 18px solid transparent;
+            border-right: 18px solid transparent;
+            border-bottom: 32px solid #ffffff;
+        }
+
+        .sq-square {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #ff3278;
+            background: transparent;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f7d774, #d4af37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 6px;
+        }
+
+        .sub {
+            font-size: 0.8rem;
+            color: rgba(180, 170, 220, 0.65);
+            margin-bottom: 32px;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: rgba(200, 190, 240, 0.7);
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 13px 16px;
+            border-radius: 14px;
+            border: 1px solid rgba(214, 194, 143, 0.2);
+            outline: none;
+            font-size: 0.92rem;
+            font-family: 'Inter', sans-serif;
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .input-group input::placeholder {
+            color: rgba(180, 170, 220, 0.45);
+        }
+
+        .input-group input:focus {
+            border-color: rgba(212, 175, 55, 0.55);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5), 0 0 0 3px rgba(212, 175, 55, 0.15);
+        }
+
+        #errorMsg {
+            background: rgba(255, 60, 60, 0.12);
+            border: 1px solid rgba(255, 80, 80, 0.3);
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 0.82rem;
+            color: #ff8888;
+            margin-bottom: 14px;
+            display: none;
+        }
+
+        .login-btn {
+            width: 100%;
+            margin-top: 8px;
+            padding: 14px;
+            border-radius: 18px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 800;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f7d774, #d4af37, #b8962e);
+            color: #2b2100;
+            box-shadow: 0 8px 22px rgba(212, 175, 55, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.65);
+            transition: all 0.25s cubic-bezier(0.34, 1.45, 0.64, 1);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 14px 32px rgba(212, 175, 55, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        /* 👑 Admin list hint */
+        .admin-hint {
+            margin-top: 20px;
+            font-size: 0.72rem;
+            color: rgba(180, 170, 220, 0.4);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <button class="back-btn" onclick="window.location.href='index.html'">← Back</button>
+
+    <div class="card">
+        <div class="squid-shapes">
+            <div class="sq-circle"></div>
+            <div class="sq-triangle"></div>
+            <div class="sq-square"></div>
+        </div>
+        <h2>Admin Portal</h2>
+        <p class="sub">Authorised personnel only</p>
+
+        <div class="input-group">
+            <label>ADMIN USERNAME</label>
+            <input id="username" type="text" placeholder="e.g. rashmika admin" autocomplete="username" />
+        </div>
+        <div class="input-group">
+            <label>ADMIN PASSWORD</label>
+            <input id="password" type="password" placeholder="Enter admin password" autocomplete="current-password" />
+        </div>
+
+        <div id="errorMsg"></div>
+
+        <button class="login-btn" onclick="adminLogin()">Access Dashboard →</button>
+
+        <p class="admin-hint">Contact system administrator for credentials.</p>
+    </div>
+
+    <script>
+        /**
+         * Hardcoded admins:
+         * username = lowercase(name) + "admin"   e.g. "rashmika" → "rashmika admin" — actually "rashmikaadmin"
+         * password = lowercase(name) + "19"      e.g. "rashmika19"
+         */
+        const ADMINS = [
+            { name: 'Rashmika', username: 'rashmikaadmin', password: 'rashmika19' },
+            { name: 'Aryan', username: 'aryanadmin', password: 'aryan19' },
+            { name: 'Pooja', username: 'poojaadmin', password: 'pooja19' },
+            { name: 'Vikram', username: 'vikramadmin', password: 'vikram19' },
+            { name: 'Mithra', username: 'mithraadmin', password: 'mithra19' },
+        ];
+
+        function showError(msg) {
+            const el = document.getElementById('errorMsg');
+            el.textContent = msg;
+            el.style.display = 'block';
+        }
+
+        function adminLogin() {
+            const username = document.getElementById('username').value.trim().toLowerCase();
+            const password = document.getElementById('password').value.trim();
+
+            if (!username || !password) {
+                showError('Please enter both username and password.'); return;
+            }
+
+            const admin = ADMINS.find(a => a.username === username && a.password === password);
+            if (!admin) {
+                showError('Invalid admin credentials. Access denied.'); return;
+            }
+
+            // ✅ Admin session
+            localStorage.setItem('adminLoggedIn', admin.name);
+            localStorage.removeItem('loggedInUser'); // clean user session
+
+            window.location.href = 'dashboard.html';
+        }
+
+        document.addEventListener('keydown', (e) => { if (e.key === 'Enter') adminLogin(); });
+    </script>
+</body>
+
+</html>
