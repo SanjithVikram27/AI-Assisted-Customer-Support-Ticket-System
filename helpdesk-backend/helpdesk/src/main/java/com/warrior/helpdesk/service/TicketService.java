@@ -16,9 +16,12 @@ import java.util.stream.Collectors;
 public class TicketService {
 
     private final TicketRepository ticketRepository;
+    private final NotificationService notificationService;
 
-    public TicketService(TicketRepository ticketRepository) {
+    public TicketService(TicketRepository ticketRepository,
+                         NotificationService notificationService) {
         this.ticketRepository = ticketRepository;
+        this.notificationService = notificationService;
     }
 
     // ─── CREATE ───────────────────────────────────────────────────────────────
@@ -61,15 +64,36 @@ public class TicketService {
                 .collect(Collectors.toList());
     }
 
-    // ─── CLOSE
-    // ────────────────────────────────────────────────────────────────────────────
+    // ─── CLOSE ────────────────────────────────────────────────────────────────
     public void closeTicket(Long id, String closedBy) {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Ticket", "id", id));
         ticket.setStatus(TicketStatus.CLOSED);
-        ticket.setClosedBy(closedBy != null && !closedBy.isBlank() ? closedBy : "admin");
+        String resolver = closedBy != null && !closedBy.isBlank() ? closedBy : "admin";
+        ticket.setClosedBy(resolver);
         ticket.setClosedAt(LocalDateTime.now());
         ticketRepository.save(ticket);
+
+        // 🔔 Notify the ticket creator
+        // Fallback chain: createdBy → username (robust against null/blank)
+        String recipient = ticket.getCreatedBy();
+        if (recipient == null || recipient.isBlank() || "chat-user".equals(recipient)) {
+            recipient = ticket.getUsername();
+        }
+
+        System.out.println("[NOTIFICATION DEBUG] Ticket #" + id + " closed by: " + resolver);
+        System.out.println("[NOTIFICATION DEBUG] createdBy=" + ticket.getCreatedBy()
+                + ", username=" + ticket.getUsername() + ", resolved recipient=" + recipient);
+
+        if (recipient != null && !recipient.isBlank() && !"chat-user".equals(recipient)) {
+            notificationService.createNotification(
+                    recipient,
+                    "Your ticket #" + id + " has been resolved by " + resolver
+            );
+            System.out.println("[NOTIFICATION DEBUG] ✅ Notification created for: " + recipient);
+        } else {
+            System.out.println("[NOTIFICATION DEBUG] ⚠️ Skipped — no valid recipient");
+        }
     }
 
     // ─── MAPPER ───────────────────────────────────────────────────────────────

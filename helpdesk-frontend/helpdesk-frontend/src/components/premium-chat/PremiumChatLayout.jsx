@@ -4,14 +4,27 @@ import PremiumInput from "./PremiumInput";
 import PremiumTicketCard from "./PremiumTicketCard";
 import { sendMessage } from "../../services/api";
 
+const CHAT_STORAGE_KEY = 'helpdesk_chat_messages';
+
+const DEFAULT_WELCOME = [
+  {
+    side: "left",
+    name: "AI Help Desk",
+    text: "Hello! How can I help you today?",
+  },
+];
+
 const PremiumChatLayout = () => {
-  const [messages, setMessages] = useState([
-    {
-      side: "left",
-      name: "AI Help Desk",
-      text: "Hello! How can I help you today?",
-    },
-  ]);
+  const [messages, setMessages] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem(CHAT_STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch { /* ignore parse errors */ }
+    return DEFAULT_WELCOME;
+  });
 
   const [isTyping, setIsTyping] = useState(false);
   const [time, setTime] = useState("");
@@ -49,6 +62,13 @@ const PremiumChatLayout = () => {
     const interval = setInterval(updateTime, 60000);
     return () => clearInterval(interval);
   }, []);
+
+  /* 💾 Persist chat messages to sessionStorage */
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
+    } catch { /* storage full — silently ignore */ }
+  }, [messages]);
 
   /* Auto scroll */
   useEffect(() => {
@@ -170,6 +190,7 @@ const PremiumChatLayout = () => {
             <button
               title="Logout"
               onClick={() => {
+                sessionStorage.removeItem(CHAT_STORAGE_KEY);
                 localStorage.removeItem('loggedInUser');
                 window.location.replace('/index.html');
               }}

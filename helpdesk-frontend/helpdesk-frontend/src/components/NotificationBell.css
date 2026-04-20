@@ -1,0 +1,230 @@
+/* ═══════════════════════════════════════════════════════════
+   🔔 NOTIFICATION BELL — Royal Theme
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── Bell Wrapper ─── */
+.notification-bell-wrapper {
+  position: relative;
+  z-index: 100;
+}
+
+/* ─── Bell Button ─── */
+.notification-bell-btn {
+  position: relative;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.05));
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 14px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  flex-shrink: 0;
+}
+
+.notification-bell-btn:hover {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(212, 175, 55, 0.12));
+  transform: scale(1.08);
+  box-shadow: 0 0 16px rgba(212, 175, 55, 0.3);
+}
+
+.notification-bell-btn:active {
+  transform: scale(0.94);
+}
+
+/* ─── Unread Badge ─── */
+.notification-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  background: linear-gradient(135deg, #ff3b5c, #e91e3c);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  box-shadow: 0 2px 8px rgba(255, 59, 92, 0.6);
+  animation: badgePulse 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes badgePulse {
+  0%, 100% {
+    box-shadow: 0 2px 8px rgba(255, 59, 92, 0.5);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 2px 16px rgba(255, 59, 92, 0.9);
+    transform: scale(1.1);
+  }
+}
+
+/* ─── Dropdown Panel ─── */
+.notification-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 310px;
+  max-height: 400px;
+  background: linear-gradient(160deg, rgba(43, 40, 85, 0.97), rgba(20, 18, 55, 0.98));
+  border: 1px solid rgba(214, 194, 143, 0.35);
+  border-radius: 20px;
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  overflow: hidden;
+  animation: dropdownSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  z-index: 200;
+}
+
+@keyframes dropdownSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ─── Dropdown Header ─── */
+.notification-dropdown-header {
+  padding: 14px 18px 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  background: linear-gradient(135deg, #f7d774, #d4af37, #fffbe8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  border-bottom: 1px solid rgba(214, 194, 143, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ─── Notification List ─── */
+.notification-list {
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.notification-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.notification-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.notification-list::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.3);
+  border-radius: 4px;
+}
+
+/* ─── Notification Card ─── */
+.notification-card {
+  padding: 12px 14px;
+  border-radius: 14px;
+  margin-bottom: 6px;
+  transition: all 0.2s ease;
+  position: relative;
+  cursor: default;
+}
+
+.notification-card.unread {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.03));
+  border-left: 3px solid #d4af37;
+}
+
+.notification-card.read {
+  background: rgba(255, 255, 255, 0.02);
+  border-left: 3px solid transparent;
+  opacity: 0.65;
+}
+
+.notification-card:hover {
+  background: rgba(212, 175, 55, 0.08);
+}
+
+/* ─── Card Content ─── */
+.notification-message {
+  font-size: 0.8rem;
+  color: #e0daf5;
+  line-height: 1.45;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.notification-card.unread .notification-message {
+  color: #fff;
+  font-weight: 600;
+}
+
+.notification-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.notification-time {
+  font-size: 0.68rem;
+  color: rgba(200, 190, 230, 0.55);
+  letter-spacing: 0.3px;
+}
+
+/* ─── Mark as Read Button ─── */
+.notification-mark-read-btn {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.08));
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: #d4af37;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+}
+
+.notification-mark-read-btn:hover {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.35), rgba(212, 175, 55, 0.15));
+  box-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+  transform: scale(1.04);
+}
+
+/* ─── Empty State ─── */
+.notification-empty {
+  text-align: center;
+  padding: 36px 20px;
+  color: rgba(200, 190, 230, 0.5);
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.notification-empty-icon {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  opacity: 0.6;
+}
+
+/* ─── Overlay (click-outside catcher) ─── */
+.notification-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+}
