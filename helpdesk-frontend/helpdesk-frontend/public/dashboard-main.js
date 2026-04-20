@@ -24,7 +24,7 @@ window.addEventListener('DOMContentLoaded', () => {
 // ─── LOGOUT ──────────────────────────────────────────────────────────────────
 function adminLogout() {
     localStorage.removeItem('adminLoggedIn');
-    window.location.replace('index.html');
+    window.location.replace('portal.html');
 }
 
 // ─── LOAD TICKETS ────────────────────────────────────────────────────────────

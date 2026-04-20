@@ -38,11 +38,11 @@ const PremiumChatLayout = () => {
     }
     const raw = localStorage.getItem("loggedInUser");
     if (!raw) {
-      window.location.replace("/index.html");
+      window.location.replace("/portal.html");
       return null;
     }
     try { return JSON.parse(raw); }
-    catch { window.location.replace("/index.html"); return null; }
+    catch { window.location.replace("/portal.html"); return null; }
   });
 
   const bottomRef = useRef(null);
@@ -192,7 +192,7 @@ const PremiumChatLayout = () => {
               onClick={() => {
                 sessionStorage.removeItem(CHAT_STORAGE_KEY);
                 localStorage.removeItem('loggedInUser');
-                window.location.replace('/index.html');
+                window.location.replace('/portal.html');
               }}
               style={{
                 background: 'linear-gradient(135deg,#d6c28f,#b89b5e)',

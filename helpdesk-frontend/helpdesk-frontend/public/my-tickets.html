@@ -660,7 +660,7 @@
             const admin = localStorage.getItem('adminLoggedIn');
             if (admin) { window.location.replace('dashboard.html'); return; }
             const user = localStorage.getItem('loggedInUser');
-            if (!user) { window.location.replace('index.html'); }
+            if (!user) { window.location.replace('portal.html'); }
         })();
     </script>
 
@@ -790,7 +790,7 @@
         // ── Load ────────────────────────────────────────────────────────────────
         async function loadMyTickets() {
             const container = document.getElementById('tickets');
-            if (!loggedInUser) { window.location.replace('index.html'); return; }
+            if (!loggedInUser) { window.location.replace('portal.html'); return; }
 
             try {
                 const res = await fetch(`${API_BASE_URL}/tickets?createdBy=${encodeURIComponent(loggedInUser.username)}`);
