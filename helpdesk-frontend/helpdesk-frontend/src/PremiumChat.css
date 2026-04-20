@@ -13,7 +13,7 @@ body::before {
   content: '';
   position: fixed;
   inset: 0;
-  z-index: 0;
+  z-index: -1;
   background:
     radial-gradient(ellipse 80% 60% at 20% 30%, rgba(0, 210, 255, 0.55) 0%, transparent 60%),
     radial-gradient(ellipse 70% 50% at 75% 25%, rgba(120, 80, 255, 0.5) 0%, transparent 55%),
@@ -29,7 +29,7 @@ body::after {
   content: '';
   position: fixed;
   inset: 0;
-  z-index: 0;
+  z-index: -1;
   background:
     radial-gradient(ellipse 50% 40% at 40% 50%, rgba(0, 180, 255, 0.3) 0%, transparent 60%),
     radial-gradient(ellipse 60% 50% at 70% 40%, rgba(180, 60, 255, 0.3) 0%, transparent 55%);
@@ -76,12 +76,23 @@ body::after {
   }
 }
 
+#root {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+}
+
 /* CENTER PHONE */
 .phone-frame {
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+  z-index: 2;
 }
 
 /* PHONE BODY */
