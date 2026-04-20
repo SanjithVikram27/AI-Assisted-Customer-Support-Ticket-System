@@ -13,10 +13,11 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
+
                 registry.addMapping("/**")
                         .allowedOriginPatterns(
                                 "http://localhost:*",
-                                "https://ai-assisted-customer-support-ticket.vercel.app"
+                                "https://*.vercel.app"   // ✅ FIXED
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
